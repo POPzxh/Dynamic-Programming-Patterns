@@ -112,9 +112,7 @@ The minimum path sum from top to bottom is `11` (i.e., **2** + **3** + **5** + *
 **分析：**
 
 对于`dp[i][j]`只有`dp[i-1][j]`和`dp[i-1][j-1]`能够到达。所以：
-$$
-dp[i][j] = min(dp[i-1][j] , dp[i-1][j-1]) + triangle[i][j]
-$$
+<a href="https://www.codecogs.com/eqnedit.php?latex=dp[i][j]&space;=&space;min(dp[i-1][j]&space;,&space;dp[i-1][j-1])&space;&plus;&space;triangle[i][j]" target="_blank"><img src="https://latex.codecogs.com/gif.latex?dp[i][j]&space;=&space;min(dp[i-1][j]&space;,&space;dp[i-1][j-1])&space;&plus;&space;triangle[i][j]" title="dp[i][j] = min(dp[i-1][j] , dp[i-1][j-1]) + triangle[i][j]" /></a>
 
 
 ```java
