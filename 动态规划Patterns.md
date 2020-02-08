@@ -54,8 +54,8 @@ Decision Making
 |                                                              |                                                              |                                                              |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | [64. Minimum Path Sum](https://leetcode.com/problems/minimum-path-sum/) `Medium` | [322. Coin Change](https://leetcode.com/problems/coin-change/) `Medium` | [931. Minimum Falling Path Sum](https://leetcode.com/problems/minimum-falling-path-sum/) `Medium` |
-| [650. 2 Keys Keyboard](https://leetcode.com/problems/2-keys-keyboard/) `Medium` | [279. Perfect Squares](https://leetcode.com/problems/perfect-squares/) `Medium` | <a href="#1049. Last Stone Weight II">1049. Last Stone Weight II</a>`Medium` |
-| <a href="#120. Triangle">120. Triangle</a>`Medium`           | <a href="#474. Ones and Zeroes">474. Ones and Zeroes</a> `Me` | <a href="#221. Maximal Square">221. Maximal Square</a>   `Medium` |
+| [650. 2 Keys Keyboard](https://leetcode.com/problems/2-keys-keyboard/) `Medium` | [279. Perfect Squares](https://leetcode.com/problems/perfect-squares/) `Medium` | [1049. Last Stone Weight II](#1049. Last Stone Weight II)`Medium` |
+| <a href="#120. Triangle">120. Triangle</a>`Medium`           | <a href="#474. Ones and Zeroes">474. Ones and Zeroes</a> `Medium` | <a href="#221. Maximal Square">221. Maximal Square</a>   `Medium` |
 |                                                              |                                                              |                                                              |
 
 ------
