@@ -318,7 +318,7 @@ Output: 6
 
 对于一个**n*m**的矩形，能切割的正方形边长范围为**1~min(n,m)**。所以显然，就是找到切割完后剩余大小的最小值：
 
-![](C:\Java学习\Leetcode\动态规划\Dynamic-Programming-Patterns\G1240.png)
+![](https://github.com/POPzxh/Dynamic-Programming-Patterns/blob/master/G1240.png)
 
 ------
 
