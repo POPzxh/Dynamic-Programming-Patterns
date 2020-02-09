@@ -320,10 +320,6 @@ Output: 6
 
 ![](https://github.com/POPzxh/Dynamic-Programming-Patterns/blob/master/G1240.png)
 
-!
-
-所以，
-
 ------
 
 ## Distinct Ways
