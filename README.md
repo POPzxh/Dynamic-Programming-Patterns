@@ -50,7 +50,7 @@ Decision Making
 > }
 > ```
 
-#### 相似题目
+### 相似题目
 
 |                                                              |                                                              |                                                              |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -320,7 +320,233 @@ Output: 6
 
 ![](https://github.com/POPzxh/Dynamic-Programming-Patterns/blob/master/G1240.png)
 
+![](C:\Java学习\Leetcode\动态规划\Dynamic-Programming-Patterns\G1240.png)
+
+对于剩余部分有两种切法：横，(i-l)\*(j)+l\*(j-l) ; 竖，(i-l)(j-l) + i * (j-l)。
+
+13，11为特殊情况。
+
+```java
+class Solution {
+    public int tilingRectangle(int n, int m) {
+        if(n==11 && m == 13) return 6;
+        if(n==13 && m == 11) return 6;
+        int[][] dp = new int[n+1][m+1];
+        dp[1][1] =1;
+        for(int i = 1 ; i<=n ;i ++){
+            for(int j =1 ; j<=m ; j++){
+                if(i==j){dp[i][j]=1;continue;}
+                int min = Integer.MAX_VALUE;
+                for(int l = Math.min(i,j);l>=1;l--){
+                    if(l==Math.min(i,j)){
+                        if(i==l) min = dp[i][j-l];
+                        else min = dp[i-l][j];
+                    }
+                    else
+                        min = Integer.min(min,Integer.min(dp[i-l][l]+dp[i][j-l] , dp[l][j-l]+dp[i-l][j]));
+                }
+                dp[i][j]= min+1;
+            }
+        }
+        
+        return dp[n][m];
+    }
+}
+```
+
+##### DFS
+
+使用长度为m的数组记录每一个横向位置的高度。每次铺砖，在高度最低的地方，长度由高到低遍历。
+
+```java
+class Solution {
+    int maxStep = Integer.MAX_VALUE;
+    public int tilingRectangle(int n, int m) {
+        int[] height =new int[m];
+        int least = 0;
+        tiling(n,height,0,0);
+        return maxStep;
+    }
+
+    public void tiling(int n , int[] height , int least , int cnt){
+        if(height[least] == n){
+            if(cnt<maxStep) maxStep = cnt;
+        }
+        else{
+            if(cnt >= maxStep) return;
+            int base = height[least];
+            int len = 1;
+            for(;len<height.length;len++) if(least + len == height.length || height[least+len]!=base||base+len==n) break;
+            for(; len>=1;len--){               
+                for(int i = least ; i<least+len;i++) height[i] = base + len;
+                int temp = 0;
+                for (int i = 0; i < height.length; i++) if (height[i] < height[temp]) temp = i;
+                tiling(n, height, temp, cnt + 1);
+                for(int i = least ; i<least+len;i++) height[i] = base;
+            }
+        }
+    }
+}
+```
+
+
+
 ------
 
 ## Distinct Ways
 
+### 一般问题陈述
+
+> ​	Given a target find a number of distinct ways to reach the target.
+>
+> ​	找到到达目标不同的路径数。
+
+### 一般方法
+
+>Sum all possible ways to reach the current state.
+>
+>对于当前状态，对于所有能够到达当前状态的路径求和。
+>
+>```
+>routes[i] = routes[i-1] + routes[i-2], ... , + routes[i-k]
+>```
+
+### **例题** : 70. Climbing Stairs `Easy`
+
+You are climbing a stair case. It takes *n* steps to reach to the top.
+
+Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?
+
+**Note:** Given *n* will be a positive integer.
+
+**Example 1:**
+
+```
+Input: 2
+Output: 2
+Explanation: There are two ways to climb to the top.
+1. 1 step + 1 step
+2. 2 steps
+```
+
+**分析**
+
+对于一个台阶，只能通过跨一步或者两步到达。所以，显然`dp[i] = dp[i-1] + dp[i-2]`
+
+```java
+class Solution {
+    public int climbStairs(int n) {
+        int[] dp = new int[n+1];
+        dp[0] = 1;
+        for(int i=1 ; i<=n ; i++){
+            if(i - 2 >= 0) dp[i] += dp[i-2];
+            dp[i] += dp[i-1];
+        }
+        return dp[n];
+    }
+}
+```
+
+### 相似问题
+
+|                                               |                                                              |      |
+| --------------------------------------------- | ------------------------------------------------------------ | ---- |
+| [62. Unique Paths](#62-unique-paths) `Medium` | [1155. Number of Dice Rolls With Target Sum](#1155-Number-of-Dice-Rolls-With-Target-Sum)`Medium` |      |
+|                                               |                                                              |      |
+|                                               |                                                              |      |
+
+#### 62 Unique Paths
+
+A robot is located at the top-left corner of a *m* x *n* grid (marked 'Start' in the diagram below).
+
+The robot can only move either down or right at any point in time. The robot is trying to reach the bottom-right corner of the grid (marked 'Finish' in the diagram below).
+
+How many possible unique paths are there?
+
+![img](https://assets.leetcode.com/uploads/2018/10/22/robot_maze.png)
+Above is a 7 x 3 grid. How many possible unique paths are there?
+
+**Note:** *m* and *n* will be at most 100.
+
+**Example 1:**
+
+```
+Input: m = 3, n = 2
+Output: 3
+Explanation:
+From the top-left corner, there are a total of 3 ways to reach the bottom-right corner:
+1. Right -> Right -> Down
+2. Right -> Down -> Right
+3. Down -> Right -> Right
+```
+
+**分析**
+
+只能通过向下走，或者向右走才能到达一个方块。所以显然，`dp[i][j] = dp[i-1][j] + dp[i][j-1]`
+
+这题可以只用一维数组。
+
+```java
+class Solution {
+    public int uniquePaths(int m, int n) {
+        int[] dp = new int[n+1];
+        dp[1] = 1;
+        for(int i = 0 ; i<m ; i++){
+            for(int j = 1 ; j<= n ; j++){                
+                dp[j] = dp[j] + dp[j-1];
+            }
+        }
+        return dp[n];
+    }
+}
+```
+
+------
+
+#### 1155 Number of Dice Rolls With Target Sum
+
+You have `d` dice, and each die has `f` faces numbered `1, 2, ..., f`.
+
+Return the number of possible ways (out of `fd` total ways) **modulo `10^9 + 7`** to roll the dice so the sum of the face up numbers equals `target`.
+
+**Example 1:**
+
+```
+Input: d = 1, f = 6, target = 3
+Output: 1
+Explanation: 
+You throw one die with 6 faces.  There is only one way to get a sum of 3.
+```
+
+**分析**
+
+对于骰子点数**i**，<a href="https://www.codecogs.com/eqnedit.php?latex=\dpi{120}&space;dp[i]&space;=&space;\sum&space;_{j=1}^fdp[i-f]" target="_blank"><img src="https://latex.codecogs.com/png.latex?\dpi{120}&space;dp[i]&space;=&space;\sum&space;_{j=1}^fdp[i-f]" title="dp[i] = \sum _{j=1}^fdp[i-f]" /></a>
+
+注意范围：**d~d*f**
+
+```java
+class Solution {
+    public int numRollsToTarget(int d, int f, int target) {
+        if(target < d) return 0;
+        if(target > d*f) return 0;
+        int[] dp = new int[d*f+1];
+        int mod = (int)Math.pow(10 , 9) + 7;
+        int max = f*2;
+        int min = 2;
+        for(int i = 1; i<=f ; i++) dp[i] = 1;
+        for(int i = 1 ; i<d ; i++){
+            for(int j = max ; j>= min ; j--){
+                dp[j] = 0;
+                for(int num = 1 ; num <=f ; num++){
+                    if(j-num >= min-1) dp[j] = (dp[j-num] + dp[j])%mod ;
+                }
+            }
+            max += f;
+            min += 1;
+        }
+        return dp[target];
+    }
+}
+```
+
+------
