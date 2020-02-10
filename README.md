@@ -1,13 +1,18 @@
 # Dynamic Programming Patterns
 
-<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"> </script>
 ### Patterns
 
 1）Minimum (Maximum) Path to Reach a Target**到达目标的最长（最短）路径**
+
 2）[Distinct Ways](#Distinct-ways)
+
 Merging Intervals
+
 DP on Strings
+
 Decision Making
+
+
 
 ## 1.Minimum (Maximum) Path to Reach a Target	**到达目标的最长（最短）路径**
 
