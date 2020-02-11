@@ -319,7 +319,7 @@ Output: 6
 
 **分析**
 
-##### 动态规划（Cheating）
+* 动态规划（Cheating）
 
 对于一个**n*m**的矩形，能切割的正方形边长范围为**1~min(n,m)**。所以显然，就是找到切割完后剩余大小的最小值：
 
@@ -359,7 +359,7 @@ class Solution {
 }
 ```
 
-##### DFS
+* DFS
 
 使用长度为m的数组记录每一个横向位置的高度。每次铺砖，在高度最低的地方，长度由高到低遍历。
 
@@ -454,11 +454,11 @@ class Solution {
 
 ### 相似问题
 
-|                                               |                                                              |      |
-| --------------------------------------------- | ------------------------------------------------------------ | ---- |
-| [62. Unique Paths](#62-unique-paths) `Medium` | [1155. Number of Dice Rolls With Target Sum](#1155-Number-of-Dice-Rolls-With-Target-Sum)`Medium` |      |
-|                                               |                                                              |      |
-|                                               |                                                              |      |
+|                                               |                                                              |                                                              |
+| --------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| [62. Unique Paths](#62-unique-paths) `Medium` | [1155. Number of Dice Rolls With Target Sum](#1155-Number-of-Dice-Rolls-With-Target-Sum)`Medium` | [688. Knight Probability in Chessboard](#688-Knight-Probability-in-Chessboard)`MEdium` |
+|                                               |                                                              |                                                              |
+|                                               |                                                              |                                                              |
 
 #### 62 Unique Paths
 
@@ -555,3 +555,150 @@ class Solution {
 ```
 
 ------
+
+#### 688 Knight Probability in Chessboard
+
+迭代K次，每个位置都只能从8个方向到达。
+
+```java
+class Solution {
+    public double knightProbability(int N, int K, int r, int c) {
+        if(K == 0) return 1;
+                int[][] mov = new int[][]{
+                {-2 , -1},
+                {-1 , -2},
+                {-2 , 1},
+                {-1 , 2},
+                {1 ,2 },
+                {2 , 1},
+                {2 , -1},
+                {1 , -2}
+        };
+        double[][] dp = new double[N][N];
+        for(int step = 0 ; step < K ;step++){
+            double[][] temp = new double[N][N];
+            for(int i = 0 ; i< N ; i++){
+                for(int j = 0 ; j < N ;j++){
+                    //遍历8个方向，更新dp[i][j]的数值
+                    for(int dir = 0 ; dir <8 ; dir++) {
+                        int x = i + mov[dir][0];
+                        int y = j + mov[dir][1];
+                        if(x <0 || x>=N || y <0 || y>= N) continue;//不在棋盘范围内，跳过
+                        if(dp[x][y] == 0) temp[i][j] += 1/8.0;
+                        else temp[i][j] += dp[x][y]/8.0;
+                    }
+                }
+            }
+            dp =temp;
+        }  
+        return dp[r][c] ;
+    }
+}
+```
+
+------
+
+#### 494. Target Sum
+
+You are given a list of non-negative integers, a1, a2, ..., an, and a target, S. Now you have 2 symbols `+` and `-`. For each integer, you should choose one from `+` and `-` as its new symbol.
+
+Find out how many ways to assign symbols to make sum of integers equal to target S.
+
+**Example 1:**
+
+```
+Input: nums is [1, 1, 1, 1, 1], S is 3. 
+Output: 5
+Explanation: 
+
+-1+1+1+1+1 = 3
++1-1+1+1+1 = 3
++1+1-1+1+1 = 3
++1+1+1-1+1 = 3
++1+1+1+1-1 = 3
+
+There are 5 ways to assign symbols to make the sum of nums be target 3.
+```
+
+**分析**
+
+* BFS
+
+遍历`nums[]`中的每一个数值，更新所有可能的和的组合数。
+
+```java
+class Solution {
+    public int findTargetSumWays(int[] nums, int S) {
+        HashMap<Integer , Integer> map = null;
+        for(int num : nums) {
+            if (map == null) {
+                map = new HashMap<>();
+                if(num == 0) map.put(0 , 2);
+                else{
+                    map.put(num, 1);
+                    map.put(-num, 1);
+                }
+            } else {
+                HashMap<Integer, Integer> temp = new HashMap<>();
+                map.forEach((k, v) -> {
+                    temp.put(k + num, v + temp.getOrDefault(k + num, 0));
+                    temp.put(k - num, v + temp.getOrDefault(k - num, 0));
+                });
+                map = temp;
+            }
+        }
+        if(!map.containsKey(S)) return 0;
+        return map.get(S);
+    }
+}
+```
+
+------
+
+#### 377. Combination Sum IV
+
+Given an integer array with all positive numbers and no duplicates, find the number of possible combinations that add up to a positive integer target.
+
+**Example:**
+
+```
+nums = [1, 2, 3]
+target = 4
+
+The possible combination ways are:
+(1, 1, 1, 1)
+(1, 1, 2)
+(1, 2, 1)
+(1, 3)
+(2, 1, 1)
+(2, 2)
+(3, 1)
+
+Note that different sequences are counted as different combinations.
+
+Therefore the output is 7.
+```
+
+**分析**
+
+没啥说的，`dp[i]+=dp[i-num]`
+
+```java
+class Solution {
+    public int combinationSum4(int[] nums, int target) {
+        int[] dp = new int[target+1];
+        Arrays.sort(nums);
+        dp[0] = 1;
+        for(int i = 0 ; i<=target ; i++){
+            for(int num : nums){
+                if(i - num<0)break;
+                else{
+                    dp[i] += dp[i-num];
+                }
+            }
+        }
+        return dp[target];
+    }
+}
+```
+
