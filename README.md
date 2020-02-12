@@ -454,11 +454,11 @@ class Solution {
 
 ### 相似问题
 
-|                                               |                                                              |                                                              |
-| --------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| [62. Unique Paths](#62-unique-paths) `Medium` | [1155. Number of Dice Rolls With Target Sum](#1155-Number-of-Dice-Rolls-With-Target-Sum)`Medium` | [688. Knight Probability in Chessboard](#688-Knight-Probability-in-Chessboard)`MEdium` |
-|                                               |                                                              |                                                              |
-|                                               |                                                              |                                                              |
+|                                                            |                                                              |                                                              |
+| ---------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| [62. Unique Paths](#62-unique-paths) `Medium`              | [1155. Number of Dice Rolls With Target Sum](#1155-Number-of-Dice-Rolls-With-Target-Sum)`Medium` | [688. Knight Probability in Chessboard](#688-Knight-Probability-in-Chessboard)`MEdium` |
+| [377. Combination Sum IV](#377-Combination-Sum-IV)`Medium` | [935. Knight Dialer](#935-Knight-Dialer)`Medium`             | [1223. Dice Roll Simulation](#1223-Dice-Roll-Simulation)`Medium` |
+|                                                            |                                                              |                                                              |
 
 #### 62 Unique Paths
 
@@ -701,4 +701,111 @@ class Solution {
     }
 }
 ```
+
+-------
+
+#### 935. Knight Dialer
+
+A chess knight can move as indicated in the chess diagram below:
+
+<img src="https://assets.leetcode.com/uploads/2018/10/12/knight.png" alt="img" style="zoom:33%;" /> .      ![img](https://assets.leetcode.com/uploads/2018/10/30/keypad.png)
+
+ 
+
+This time, we place our chess knight on any numbered key of a phone pad (indicated above), and the knight makes `N-1` hops. Each hop must be from one key to another numbered key.
+
+Each time it lands on a key (including the initial placement of the knight), it presses the number of that key, pressing `N` digits total.
+
+How many distinct numbers can you dial in this manner?
+
+Since the answer may be large, **output the answer modulo `10^9 + 7`**.
+
+**Example 1:**
+
+```
+Input: 1
+Output: 10
+```
+
+跟[688. Knight Probability in Chessboard](#688-Knight-Probability-in-Chessboard)类似，不赘述。
+
+```java
+class Solution {
+    public int knightDialer(int N) {
+        int MOD = 1_000_000_007;
+        int[][] moves = new int[][]{
+            {4,6},{6,8},{7,9},{4,8},{3,9,0},
+            {},{1,7,0},{2,6},{1,3},{2,4}};
+
+        int[][] dp = new int[2][10];
+        Arrays.fill(dp[0], 1);
+        for (int hops = 0; hops < N-1; ++hops) {
+            Arrays.fill(dp[~hops & 1], 0);
+            for (int node = 0; node < 10; ++node)
+                for (int nei: moves[node]) {
+                    dp[~hops & 1][nei] += dp[hops & 1][node];
+                    dp[~hops & 1][nei] %= MOD;
+                }
+        }
+
+        long ans = 0;
+        for (int x: dp[~N & 1])
+            ans += x;
+        return (int) (ans % MOD);
+    }
+}
+```
+
+------
+
+#### 1223. Dice Roll Simulation
+
+it cannot roll the number `i` more than `rollMax[i]` (1-indexed) **consecutive** times. 
+
+Given an array of integers `rollMax` and an integer `n`, return the number of distinct sequences that can be obtained with exact `n` rolls.
+
+Two sequences are considered different if at least one element differs from each other. Since the answer may be too large, return it modulo `10^9 + 7`.
+
+**Example 1:**
+
+```
+Input: n = 2, rollMax = [1,1,2,2,2,3]
+Output: 34
+Explanation: There will be 2 rolls of die, if there are no constraints on the die, there are 6 * 6 = 36 possible combinations. In this case, looking at rollMax array, the numbers 1 and 2 appear at most once consecutively, therefore sequences (1,1) and (2,2) cannot occur, so the final answer is 36-2 = 34.
+```
+
+**分析**
+
+```java
+class Solution {
+    public int dieSimulator(int n, int[] rollMax) {
+        int mod = (int)Math.pow(10,9) + 7;
+        long[][] dp = new long[n][7];
+        Arrays.fill(dp[0] , 1);
+        dp[0][6] = 6;
+        for(int i = 1 ; i<n ; i++){
+            long sum = 0;
+            for(int face = 0 ; face < 6 ; face++){
+                if(i < rollMax[face]){
+                    dp[i][face] = dp[i-1][6];
+                }
+                else{
+                    for(int consec = 1 ; consec <= rollMax[face] ; consec++){
+                        if(i - consec >= 0){
+                            dp[i][face] += (dp[i-consec][6] - dp[i-consec][face])%mod;
+                            if(dp[i][face] < 0) dp[i][face] += mod;                   
+                        }
+                    }
+                }
+                sum += dp[i][face];
+                sum %= mod;
+            }
+            dp[i][6] =sum;
+        }
+        return (int)dp[n-1][6]%mod;
+    }
+}
+```
+
+
 
